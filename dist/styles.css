@@ -42,3 +42,5 @@
 
 /* Keep hidden admin screens out of view after a successful sign-in. */
 .admin-login-wrap[hidden]{display:none!important}
+
+.category-tiles[hidden],.category-links-wrap[hidden]{display:none!important}.admin-help{margin:14px 0 0;color:var(--muted);font-size:10px;line-height:1.6}
