@@ -108,5 +108,10 @@
       "source": "/category/:slug",
       "destination": "/category.html"
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "main": false
+    }
+  }
 }
