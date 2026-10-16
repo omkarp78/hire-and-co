@@ -145,16 +145,33 @@
     const name=localized(p,"name"),description=localized(p,"desc")||localized(p,"description");
     return "<article class='product-card'><div class='product-image'><a class='product-image-link' href='"+makeUrl("product.html",{id:p.id})+"'>"+image(p.image,name)+(p.topSeller?"<span class='product-label'>Top seller</span>":"")+"</a><button class='quick-add' data-add='"+esc(p.id)+"' aria-label='Add "+esc(name)+" to bag'>＋</button></div><div class='product-info'><div class='product-type'>"+esc(translatedType(p.type))+"</div><a class='product-name' href='"+makeUrl("product.html",{id:p.id})+"'>"+esc(name)+"</a><div class='product-price'>"+money(p.price)+(p.compareAt>p.price?" <del>"+money(p.compareAt)+"</del>":"")+"</div><div class='product-description'>"+esc(description||"A lovely detail for your jewellery box.")+"</div></div></article>";
   }
+  function renderMenu(){
+    const nav=document.getElementById("main-nav");if(!nav)return;
+    nav.innerHTML=data.cms.menus.filter(m=>m.enabled!==false).sort((x,y)=>(x.order||0)-(y.order||0)).map(item=>{
+      if(item.target==="home")return "<a href='/home' class='nav-link "+(document.body.dataset.page==="home"?"active":"")+"'>"+esc(item.label)+"</a>";
+      if(item.target.startsWith("category:")){const cat=data.cms.categories.find(c=>c.id===item.target.slice(9));if(!cat)return "";if(cat.status==="coming_soon")return "<span class='nav-link nav-disabled' aria-disabled='true'>"+esc(item.label)+" <small>Coming soon</small></span>";return "<a href='/category/"+encodeURIComponent(cat.slug)+"' class='nav-link'>"+esc(item.label)+"</a>";}
+      if(item.target.startsWith("listing:")){const page=data.cms.listings.find(x=>x.id===item.target.slice(8));return page?"<a href='/listing/"+encodeURIComponent(page.slug)+"' class='nav-link'>"+esc(item.label)+"</a>":"";}
+      return "";
+    }).join("");
+  }
   function renderHome(){
-    const visibleCategories=data.home.categoryOrder.filter(cat=>!data.home.hiddenCategories.includes(cat));
-    const tiles=document.getElementById("home-category-tiles"),styleWrap=document.querySelector(".category-links-wrap");
-    if(tiles){tiles.hidden=!data.home.categoriesEnabled;tiles.innerHTML=visibleCategories.map(cat=>{const c=categoryCards[cat];return "<a class='category-tile "+c.className+"' href='/category/"+c.slug+"'><img src='/"+c.image+"' alt='"+esc(c.alt)+"'/><span class='tile-kicker'>"+esc(c.kicker)+"</span><span class='tile-title'>"+esc(lang==="mr"?({"Earrings":"कानातले","Mangalsutra":"मंगळसूत्र","Jewellery Sets":"दागिन्यांचे सेट"}[cat]||c.title):lang==="hi"?({"Earrings":"बालियाँ","Mangalsutra":"मंगलसूत्र","Jewellery Sets":"ज्वेलरी सेट"}[cat]||c.title):c.title)+" <b>↗</b></span></a>";}).join("");}
+    const hero=data.cms.hero||{},title=document.getElementById("hero-title"),accent=document.getElementById("hero-accent"),description=document.getElementById("hero-description"),heroImage=document.getElementById("hero-image");
+    if(title)title.textContent=hero.title||"Little details.";if(accent)accent.textContent=hero.accent||"Lasting glow.";if(description)description.textContent=hero.description||"";if(heroImage){heroImage.src=hero.image||"/media/emerald-rajwadi-36.webp";heroImage.alt=hero.alt||"Jewellery in warm natural light";}
+    const visible=data.cms.categories.filter(c=>c.enabled!==false).sort((x,y)=>(x.order||0)-(y.order||0));
+    const live=visible.filter(c=>c.status!=="coming_soon"),coming=visible.filter(c=>c.status==="coming_soon");
+    const tiles=document.getElementById("home-category-tiles"),styleWrap=document.querySelector(".category-links-wrap"),comingItems=document.getElementById("coming-soon-items");
+    const categorySectionOn=data.home.categoriesEnabled!==false;
+    if(tiles){tiles.hidden=!categorySectionOn;tiles.innerHTML=categorySectionOn?live.map((c,i)=>"<a class='category-tile category-dynamic category-tone-"+(i%3)+"' href='/category/"+encodeURIComponent(c.slug)+"'><img src='"+esc(c.image||"/media/emerald-rajwadi-36.webp")+"' alt='"+esc(c.name)+"' loading='lazy'/><span class='tile-kicker'>"+esc(c.kicker||"HIRE FAMILY COLLECTION")+"</span><span class='tile-title'>"+esc(c.name)+" <b>↗</b></span></a>").join(""):"";}
+    if(comingItems)comingItems.innerHTML=coming.map(c=>"<div class='coming-soon-item category-coming'><span class='coming-icon' aria-hidden='true'>✧</span><span><strong>"+esc(c.name)+"</strong><small>Coming soon</small></span></div>").join("");
+    const comingStrip=document.querySelector(".coming-soon-strip");if(comingStrip){comingStrip.hidden=!categorySectionOn||!coming.length;}
     const cats=document.getElementById("home-categories");
-    if(cats){let html="";if(data.home.categoriesEnabled)visibleCategories.forEach(cat=>(types[cat]||[]).forEach(type=>{html+="<a class='category-link' href='"+makeUrl("category.html",{category:cat,type:type})+"'>"+esc(translatedType(type))+" <span>↗</span></a>";}));cats.innerHTML=html;}
-    if(styleWrap)styleWrap.hidden=!data.home.categoriesEnabled||!visibleCategories.length;
+    if(cats){let html="";if(categorySectionOn)live.forEach(cat=>(types[cat.name]||[]).forEach(type=>{html+="<a class='category-link' href='/category/"+encodeURIComponent(cat.slug)+"?type="+encodeURIComponent(type)+"'>"+esc(translatedType(type))+" <span>↗</span></a>";}));cats.innerHTML=html;}
+    if(styleWrap)styleWrap.hidden=!categorySectionOn||!live.length||!live.some(cat=>types[cat.name]?.length);
     const top=document.getElementById("top-sellers"),arrivals=document.getElementById("new-arrivals");
     if(top){top.hidden=!data.home.topSellersEnabled;document.getElementById("top-seller-title").textContent=data.home.topSellersTitle;document.getElementById("top-seller-products").innerHTML=data.home.topSellerOrder.map(id=>data.products.find(p=>p.id===id)).filter(Boolean).slice(0,4).map(productCard).join("")||"<p class='empty-state'>Top sellers will appear here soon.</p>";}
     if(arrivals){arrivals.hidden=!data.home.newArrivalsEnabled;document.getElementById("new-arrivals-title").textContent=data.home.newArrivalsTitle;document.getElementById("new-arrival-products").innerHTML=data.home.newArrivalOrder.map(id=>data.products.find(p=>p.id===id)).filter(Boolean).slice(0,4).map(productCard).join("")||"<p class='empty-state'>New arrivals will appear here soon.</p>";}
+    const custom=document.getElementById("custom-home-rails");
+    if(custom)custom.innerHTML=data.cms.rails.filter(r=>r.enabled!==false).sort((x,y)=>(x.order||0)-(y.order||0)).map(rail=>{const products=rail.productIds.map(id=>data.products.find(p=>p.id===id)).filter(Boolean);const page=data.cms.listings.find(x=>x.id===rail.listingId);return "<section class='product-section home-rail custom-rail'><div class='section-heading compact'><div><span class='eyebrow'>"+esc(rail.kicker||"FROM OUR COLLECTION")+"</span><h2>"+esc(rail.title||rail.name)+"</h2></div>"+(page?"<a class='view-all' href='/listing/"+encodeURIComponent(page.slug)+"'>View all <span>→</span></a>":"")+"</div><div class='product-grid'>"+(products.map(productCard).join("")||"<p class='empty-state'>Products will appear here soon.</p>")+"</div></section>";}).join("");
   }
   function renderCategory(){
     const root=document.getElementById("category-content");if(!root)return;
