@@ -216,7 +216,9 @@
     document.getElementById("coupon-form").addEventListener("submit",async e=>{e.preventDefault();const form=e.currentTarget,f=new FormData(form),code=String(f.get("code")).trim().toUpperCase();if(data.coupons.some(c=>c.code===code)){toast("That coupon code already exists.");return;}const coupon={code,type:String(f.get("type")),value:Number(f.get("value")),minimum:Number(f.get("minimum")||0),active:true};try{await saveCloudCoupon(coupon);data.coupons.unshift(coupon);save();form.closest("dialog").close();form.reset();renderAdmin();toast(code+" is ready.");}catch(error){cloudError(error);}});
     document.getElementById("order-form").addEventListener("submit",async e=>{e.preventDefault();const form=e.currentTarget,f=new FormData(form),id=String(f.get("id")).trim().toUpperCase();if(data.orders.some(o=>String(o.id).toUpperCase()===id)){toast("That order number already exists.");return;}const order={id,name:String(f.get("name")).trim(),contact:String(f.get("contact")).trim(),itemsText:String(f.get("items")).trim(),total:Number(f.get("total")),status:String(f.get("status")),createdAt:new Date().toISOString()};try{await saveCloudOrder(order);data.orders.unshift(order);save();form.closest("dialog").close();form.reset();renderAdmin();toast("Order added to shared tracker.");}catch(error){cloudError(error);}});
   }
+  function cleanRouteQuery(){const path=location.pathname,url=new URL(location.href);if(path.startsWith("/category/"))url.searchParams.delete("category");if(path.startsWith("/product/"))url.searchParams.delete("id");if(url.search!==location.search)history.replaceState(history.state,"",url.pathname+url.search+url.hash);}
   async function startApp(){
+    cleanRouteQuery();
     try{await loadCloudStore();}catch(error){console.error("Storefront data could not be loaded from Supabase:",error);}
     if(document.body.dataset.page==="admin"){setupLanguage();await initGate();initAdmin();}else initShop();
   }
