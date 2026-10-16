@@ -131,7 +131,7 @@
     while((node=walker.nextNode())){if(!node.__hireOriginalText)node.__hireOriginalText=node.nodeValue;const original=node.__hireOriginalText.trim();if(!original)continue;const value=map[original];node.nodeValue=value?node.nodeValue.replace(original,value):node.__hireOriginalText;}
   }
   function setupLanguage(){
-    const select=document.getElementById("language-select");if(select){select.value=lang;select.addEventListener("change",()=>{lang=select.value;localStorage.setItem("hire-jewellery-language",lang);document.documentElement.lang=lang==="mr"?"mr":lang==="hi"?"hi":"en";document.querySelectorAll("#language-select").forEach(s=>s.value=lang);if(document.body.dataset.page==="home")renderHome();if(document.body.dataset.page==="category")renderCategory();if(document.body.dataset.page==="product")renderProduct();renderCart();applyTranslations();});}
+    const select=document.getElementById("language-select");if(select){select.value=lang;select.addEventListener("change",()=>{lang=select.value;localStorage.setItem("hire-jewellery-language",lang);document.documentElement.lang=lang==="mr"?"mr":lang==="hi"?"hi":"en";document.querySelectorAll("#language-select").forEach(s=>s.value=lang);if(document.body.dataset.page==="home")renderHome();if(document.body.dataset.page==="category")renderCategory();if(document.body.dataset.page==="listing")renderListing();if(document.body.dataset.page==="product")renderProduct();renderCart();applyTranslations();});}
     document.documentElement.lang=lang==="mr"?"mr":lang==="hi"?"hi":"en";
     new MutationObserver(applyTranslations).observe(document.body,{childList:true,subtree:true});
     applyTranslations();
@@ -177,13 +177,20 @@
   }
   function renderCategory(){
     const root=document.getElementById("category-content");if(!root)return;
-    const params=new URLSearchParams(location.search),pathSlug=location.pathname.match(/^\/category\/([^/]+)/)?.[1],pathCategory={earrings:"Earrings",mangalsutras:"Mangalsutra","jewellery-sets":"Jewellery Sets",all:"all"}[pathSlug]||"all",category=params.get("category")||pathCategory,type=params.get("type")||"";
-    const title=category==="all"?(lang==="mr"?"संपूर्ण संग्रह":lang==="hi"?"पूरा संग्रह":"The whole collection"):categoryLabel(category);
+    const params=new URLSearchParams(location.search),pathSlug=location.pathname.match(/^\/category\/([^/]+)/)?.[1],legacy={earrings:"Earrings",mangalsutras:"Mangalsutra","jewellery-sets":"Jewellery Sets",all:"all"},cmsCategory=data.cms.categories.find(c=>c.slug===decodeURIComponent(pathSlug||"")),category=params.get("category")||cmsCategory?.name||legacy[pathSlug]||"all",type=params.get("type")||"";
+    const cat=data.cms.categories.find(c=>c.name===category||c.slug===category),title=category==="all"?(lang==="mr"?"संपूर्ण संग्रह":lang==="hi"?"पूरा संग्रह":"The whole collection"):(cat?.name||categoryLabel(category));
+    if(cat?.status==="coming_soon"){root.innerHTML="<div class='category-hero'><a class='back-link' href='/home'>← Back home</a><span class='eyebrow'>A NEW EDIT IS ON THE WAY</span><h1>"+esc(title)+"</h1><p>This category is coming soon. Check back for updates from the Hire family.</p><span class='coming-badge'>Coming soon</span></div>";return;}
     const choices=category==="all"?Object.values(types).flat():types[category]||[];
     const matching=data.products.filter(p=>(category==="all"||p.category===category)&&(!type||p.type===type));
-    const typeTitle=translatedType(type);
-    const empty=lang==="mr"?"या शैलीतील दागिने सध्या उपलब्ध नाहीत. नवीन वस्तू स्टुडिओतून जोडल्या जातील.":lang==="hi"?"इस शैली के गहने अभी उपलब्ध नहीं हैं। नए उत्पाद स्टूडियो से जोड़े जाएंगे।":"No pieces in this style yet. New products can be added from the studio.";
-    root.innerHTML="<div class='category-hero'><a class='back-link' href='/home'>← Back home</a><span class='eyebrow'>THE HIRE FAMILY COLLECTION</span><h1>"+esc(typeTitle||title)+"</h1><p>Handpicked pieces, shared from our home to yours.</p></div><div class='listing-controls'><div class='filter-row'><a class='filter-chip "+(!type?"active":"")+"' href='"+makeUrl("category.html",{category:category})+"'>"+(lang==="mr"?"सर्व":lang==="hi"?"सभी":"All")+" "+categoryLabel(category)+"</a>"+choices.map(t=>"<a class='filter-chip "+(type===t?"active":"")+"' href='"+makeUrl("category.html",{category:category,type:t})+"'>"+esc(translatedType(t))+"</a>").join("")+"</div><span class='listing-count'>"+matching.length+" "+(lang==="mr"?"दागिने":lang==="hi"?"गहने":"pieces")+"</span></div><div class='product-grid category-product-grid'>"+(matching.map(productCard).join("")||"<div class='empty-state'>"+empty+"</div>")+"</div>";
+    const typeTitle=translatedType(type),empty=lang==="mr"?"या शैलीतील दागिने सध्या उपलब्ध नाहीत. नवीन वस्तू स्टुडिओतून जोडल्या जातील.":lang==="hi"?"इस शैली के गहने अभी उपलब्ध नहीं हैं। नए उत्पाद स्टूडियो से जोड़े जाएंगे।":"No pieces in this style yet. New products can be added from the studio.";
+    root.innerHTML="<div class='category-hero'><a class='back-link' href='/home'>← Back home</a><span class='eyebrow'>THE HIRE FAMILY COLLECTION</span><h1>"+esc(typeTitle||title)+"</h1><p>Handpicked pieces, shared from our home to yours.</p></div><div class='listing-controls'><div class='filter-row'><a class='filter-chip "+(!type?"active":"")+"' href='"+(cat?"/category/"+encodeURIComponent(cat.slug):"/category/all")+"'>"+(lang==="mr"?"सर्व":lang==="hi"?"सभी":"All")+" "+esc(title)+"</a>"+choices.map(t=>"<a class='filter-chip "+(type===t?"active":"")+"' href='/category/"+encodeURIComponent(cat?.slug||"all")+"?type="+encodeURIComponent(t)+"'>"+esc(translatedType(t))+"</a>").join("")+"</div><span class='listing-count'>"+matching.length+" "+(lang==="mr"?"दागिने":lang==="hi"?"गहने":"pieces")+"</span></div><div class='product-grid category-product-grid'>"+(matching.map(productCard).join("")||"<div class='empty-state'>"+empty+"</div>")+"</div>";
+  }
+  function renderListing(){
+    const root=document.getElementById("listing-content");if(!root)return;
+    const slug=decodeURIComponent(location.pathname.match(/^\/listing\/([^/]+)/)?.[1]||""),page=data.cms.listings.find(x=>x.slug===slug);
+    if(!page){root.innerHTML="<section class='category-hero'><a class='back-link' href='/home'>← Back home</a><h1>Page not found</h1><p>This collection page may have been removed.</p></section>";return;}
+    const products=(page.productIds||[]).map(id=>data.products.find(p=>p.id===id)).filter(Boolean);
+    root.innerHTML="<section class='category-hero'><a class='back-link' href='/home'>← Back home</a><span class='eyebrow'>HIRE FAMILY EDIT</span><h1>"+esc(page.title)+"</h1><p>"+esc(page.description||"A handpicked edit from the Hire family collection.")+"</p></section><div class='listing-controls'><span class='listing-count'>"+products.length+" pieces</span></div><div class='product-grid category-product-grid'>"+(products.map(productCard).join("")||"<div class='empty-state'>Products will be added to this edit soon.</div>")+"</div>";
   }
   const reviewSamples={"s1":[{name:"Sample customer",rating:5,text:"Lovely set, the matching jhumkas look beautiful.",sample:true}],"m1":[{name:"Sample customer",rating:5,text:"A pretty everyday style.",sample:true}]};
   function renderProduct(){
@@ -211,8 +218,8 @@
   function showTracking(order){const root=document.getElementById("tracking-result");if(!root)return;root.innerHTML=order?"<div class='tracking-card'><b>"+esc(order.id)+"</b><p>Status: <strong>"+esc(order.status)+"</strong><br>Order placed: "+new Date(order.createdAt||Date.now()).toLocaleDateString("en-IN")+"</p></div>":"<div class='tracking-card'>We couldn't find that order number. Please check it with us in WhatsApp.</div>";}
   function initShop(){
     setupLanguage();
-    renderCart();const page=document.body.dataset.page;
-    if(page==="home")renderHome();if(page==="category")renderCategory();if(page==="product")renderProduct();
+    renderMenu();renderCart();const page=document.body.dataset.page;
+    if(page==="home")renderHome();if(page==="category")renderCategory();if(page==="listing")renderListing();if(page==="product")renderProduct();
     document.addEventListener("click",async e=>{
       const add=e.target.closest("[data-add]");if(add){addToCart(add.dataset.add);return;}
       const detail=e.target.closest("[data-detail-add]");if(detail){const qty=Math.max(1,Number(document.getElementById("detail-qty")?.value||1));addToCart(detail.dataset.detailAdd,qty);return;}
