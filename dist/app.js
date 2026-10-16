@@ -35,8 +35,10 @@
     hero:{title:"Little details.",accent:"Lasting glow.",description:"Handpicked earrings and mangalsutras, shared from our home to yours.",image:"/media/emerald-rajwadi-36.webp",alt:"Jewellery in warm natural light"},
     categories:[
       {id:"earrings",name:"Earrings",slug:"earrings",status:"live",image:"/media/ruby-jhumka-necklace-set.webp"},
-      {id:"mangalsutra",name:"Mangalsutras",slug:"mangalsutras",status:"live",image:"/media/emerald-floral-mangalsutra-set.webp"},
-      {id:"jewellery-sets",name:"Jewellery Sets",slug:"jewellery-sets",status:"live",image:"/media/pearl-jhumka-necklace-set.webp"}
+      {id:"mangalsutra",name:"Mangalsutra",slug:"mangalsutras",status:"live",image:"/media/emerald-floral-mangalsutra-set.webp"},
+      {id:"jewellery-sets",name:"Jewellery Sets",slug:"jewellery-sets",status:"live",image:"/media/pearl-jhumka-necklace-set.webp"},
+      {id:"sarees",name:"Sarees",slug:"sarees",status:"coming_soon",image:""},
+      {id:"candles",name:"Candles",slug:"candles",status:"coming_soon",image:""}
     ],
     menus:[
       {id:"home",label:"Home",target:"home",enabled:true},
@@ -148,7 +150,7 @@
   function renderMenu(){
     const nav=document.getElementById("main-nav");if(!nav)return;
     nav.innerHTML=data.cms.menus.filter(m=>m.enabled!==false).sort((x,y)=>(x.order||0)-(y.order||0)).map(item=>{
-      if(item.target==="home")return "<a href='/home' class='nav-link "+(document.body.dataset.page==="home"?"active":"")+"'>"+esc(item.label)+"</a>";
+      if(!item.target)return "";if(item.target==="home")return "<a href='/home' class='nav-link "+(document.body.dataset.page==="home"?"active":"")+"'>"+esc(item.label)+"</a>";
       if(item.target.startsWith("category:")){const cat=data.cms.categories.find(c=>c.id===item.target.slice(9));if(!cat)return "";if(cat.status==="coming_soon")return "<span class='nav-link nav-disabled' aria-disabled='true'>"+esc(item.label)+" <small>Coming soon</small></span>";return "<a href='/category/"+encodeURIComponent(cat.slug)+"' class='nav-link'>"+esc(item.label)+"</a>";}
       if(item.target.startsWith("listing:")){const page=data.cms.listings.find(x=>x.id===item.target.slice(8));return page?"<a href='/listing/"+encodeURIComponent(page.slug)+"' class='nav-link'>"+esc(item.label)+"</a>":"";}
       return "";
