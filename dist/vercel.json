@@ -9,6 +9,66 @@
       "source": "/admin.html",
       "destination": "/admin",
       "permanent": true
+    },
+    {
+      "source": "/category.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "category",
+          "value": "Earrings"
+        }
+      ],
+      "destination": "/category/earrings",
+      "permanent": true
+    },
+    {
+      "source": "/category.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "category",
+          "value": "Mangalsutra"
+        }
+      ],
+      "destination": "/category/mangalsutras",
+      "permanent": true
+    },
+    {
+      "source": "/category.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "category",
+          "value": "Jewellery Sets"
+        }
+      ],
+      "destination": "/category/jewellery-sets",
+      "permanent": true
+    },
+    {
+      "source": "/category.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "category",
+          "value": "all"
+        }
+      ],
+      "destination": "/category/all",
+      "permanent": true
+    },
+    {
+      "source": "/product.html",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "(?<id>[^/]+)"
+        }
+      ],
+      "destination": "/product/:id",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -19,6 +79,26 @@
     {
       "source": "/admin",
       "destination": "/admin.html"
+    },
+    {
+      "source": "/category/earrings",
+      "destination": "/category.html?category=Earrings"
+    },
+    {
+      "source": "/category/mangalsutras",
+      "destination": "/category.html?category=Mangalsutra"
+    },
+    {
+      "source": "/category/jewellery-sets",
+      "destination": "/category.html?category=Jewellery%20Sets"
+    },
+    {
+      "source": "/category/all",
+      "destination": "/category.html?category=all"
+    },
+    {
+      "source": "/product/:id",
+      "destination": "/product.html?id=:id"
     }
   ]
 }
