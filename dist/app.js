@@ -31,6 +31,25 @@
     "Mangalsutra":{slug:"mangalsutras",className:"category-mangalsutra",image:"media/emerald-floral-mangalsutra-set.webp",alt:"A delicate mangalsutra",kicker:"THE FOREVER FAVOURITE",title:"Mangalsutras"},
     "Jewellery Sets":{slug:"jewellery-sets",className:"category-sets",image:"media/pearl-jhumka-necklace-set.webp",alt:"A festive necklace and jewellery set",kicker:"MATCHING DETAILS",title:"Jewellery Sets"}
   };
+  const CMS_DEFAULT = {
+    hero:{title:"Little details.",accent:"Lasting glow.",description:"Handpicked earrings and mangalsutras, shared from our home to yours.",image:"/media/emerald-rajwadi-36.webp",alt:"Jewellery in warm natural light"},
+    categories:[
+      {id:"earrings",name:"Earrings",slug:"earrings",status:"live",image:"/media/ruby-jhumka-necklace-set.webp"},
+      {id:"mangalsutra",name:"Mangalsutras",slug:"mangalsutras",status:"live",image:"/media/emerald-floral-mangalsutra-set.webp"},
+      {id:"jewellery-sets",name:"Jewellery Sets",slug:"jewellery-sets",status:"live",image:"/media/pearl-jhumka-necklace-set.webp"}
+    ],
+    menus:[
+      {id:"home",label:"Home",target:"home",enabled:true},
+      {id:"earrings",label:"Earrings",target:"category:earrings",enabled:true},
+      {id:"mangalsutra",label:"Mangalsutras",target:"category:mangalsutra",enabled:true},
+      {id:"jewellery-sets",label:"Jewellery Sets",target:"category:jewellery-sets",enabled:true}
+    ],
+    rails:[],listings:[]
+  };
+  function normalizeCms(value){
+    const c=value&&typeof value==="object"?value:{},d=structuredClone(CMS_DEFAULT);
+    return {hero:{...d.hero,...(c.hero||{})},categories:Array.isArray(c.categories)?c.categories:d.categories,menus:Array.isArray(c.menus)?c.menus:d.menus,rails:Array.isArray(c.rails)?c.rails:d.rails,listings:Array.isArray(c.listings)?c.listings:d.listings};
+  }
   const products = [
     {id:"s1",name:"Ruby Jhumka Haar Set",nameMr:"रुबी झुमका हार सेट",nameHi:"रूबी झुमका हार सेट",category:"Jewellery Sets",type:types["Jewellery Sets"][0],price:1899,compareAt:0,image:pic.ruby,media:[{kind:"image",src:pic.pearlSet},{kind:"video",src:"media/ruby-jhumka-necklace-set.mp4"}],description:"A gold-tone necklace with matching ruby jhumkas. The video shows the set from different angles.",descMr:"रुबी रंगाच्या खड्यांचे जुळणारे झुमके आणि सोनसळी हार. व्हिडिओमध्ये सेटचे वेगवेगळे कोन दिसतात.",descHi:"रूबी रंग के पत्थरों वाले मेल खाते झुमके और सुनहरे रंग का हार। वीडियो में सेट के अलग-अलग कोण दिखते हैं।",topSeller:true,newArrival:true},
     {id:"m1",name:"Mini Gold-Bead Mangalsutra",nameMr:"मिनी गोल्ड-बीड मंगळसूत्र",nameHi:"मिनी गोल्ड-बीड मंगलसूत्र",category:"Mangalsutra",type:types.Mangalsutra[1],price:750,compareAt:0,image:pic.daily,media:[{kind:"image",src:pic.comboWide},{kind:"video",src:"media/daily-bead-mangalsutra.mp4"}],description:"Short daily-wear black-bead style. The uploaded offer image lists the mini mangalsutra at ₹750; confirm current availability on WhatsApp.",descMr:"दररोज वापरण्यासाठी छोट्या लांबीचे काळ्या मण्यांचे डिझाइन. अपलोड केलेल्या ऑफरच्या फोटोमध्ये मिनी मंगळसूत्राची किंमत ₹750 आहे; सध्याची उपलब्धता WhatsApp वर विचारा.",descHi:"रोज़ पहनने के लिए छोटे आकार का काले मोतियों वाला डिज़ाइन। अपलोड किए गए ऑफर चित्र में इसकी कीमत ₹750 दी है; उपलब्धता WhatsApp पर पूछें।",topSeller:true,newArrival:false},
@@ -44,13 +63,14 @@
     {id:"m7",name:"Green Kundan Long Mangalsutra Set",nameMr:"ग्रीन कुंदन लाँग मंगळसूत्र सेट",nameHi:"ग्रीन कुंदन लॉन्ग मंगलसूत्र सेट",category:"Mangalsutra",type:types.Mangalsutra[7],price:2799,compareAt:0,image:pic.emerald,media:[{kind:"image",src:pic.floral},{kind:"image",src:pic.kundan}],description:"A long, multi-strand black-bead design with green and clear-stone floral work and matching earrings.",descMr:"हिरव्या व पारदर्शक खड्यांची फुलांची नक्षी, अनेक काळ्या मण्यांच्या लांब पदरी आणि जुळणारे झुमके.",descHi:"हरे और पारदर्शी पत्थरों की फूलों वाली कारीगरी, काले मोतियों की कई लंबी लड़ियाँ और मेल खाते झुमके।",topSeller:false,newArrival:false},
     {id:"m8",name:"Emerald Pendant Rajwadi Set",nameMr:"एमराल्ड पेंडंट राजवाडी सेट",nameHi:"एमराल्ड पेंडेंट राजवाड़ी सेट",category:"Mangalsutra",type:types.Mangalsutra[7],price:2599,compareAt:0,image:pic.pendant36,media:[{kind:"image",src:pic.rajwadi36},{kind:"image",src:pic.emerald}],description:"A long black-bead set with an emerald-colour centre pendant and matching earrings.",descMr:"एमराल्ड रंगाचे मध्यवर्ती लॉकेट आणि जुळणारे झुमके असलेला लांब काळ्या मण्यांचा सेट.",descHi:"एमराल्ड रंग के बीच वाले पेंडेंट और मेल खाते झुमकों वाला लंबा काले मोतियों का सेट।",topSeller:false,newArrival:false}
   ];
-  const initial = {products:products,coupons:[{code:"GLOW10",type:"percent",value:10,minimum:499,active:true}],cart:[],orders:[],reviews:{},home:{categoriesEnabled:true,categoryOrder:Object.keys(categoryCards),hiddenCategories:[],topSellersEnabled:true,topSellersTitle:"Top sellers this week.",topSellerOrder:["m1","m2","m3","m4"],newArrivalsEnabled:true,newArrivalsTitle:"New arrivals to meet.",newArrivalOrder:["s1","s2","s3","m5"]}};
+  const initial = {products:products,coupons:[{code:"GLOW10",type:"percent",value:10,minimum:499,active:true}],cart:[],orders:[],reviews:{},home:{categoriesEnabled:true,categoryOrder:Object.keys(categoryCards),hiddenCategories:[],topSellersEnabled:true,topSellersTitle:"Top sellers this week.",topSellerOrder:["m1","m2","m3","m4"],newArrivalsEnabled:true,newArrivalsTitle:"New arrivals to meet.",newArrivalOrder:["s1","s2","s3","m5"]},cms:structuredClone(CMS_DEFAULT)};
   let data;
   try {
     data=JSON.parse(localStorage.getItem(KEY));
     if(!data){const old=JSON.parse(localStorage.getItem("hire-jewellery-demo-v2")||"null");data=structuredClone(initial);if(old){const sampleIds=new Set(["e1","e2","e3","e4","e5","e6","m1","m2","m3","m4","m5","m6","m7","m8"]);data.products.push(...(old.products||[]).filter(p=>!sampleIds.has(p.id)));data.coupons=old.coupons||data.coupons;data.orders=old.orders||[];data.reviews=old.reviews||{};data.home={...data.home,...old.home};const ids=new Set(data.products.map(p=>p.id));data.home.topSellerOrder=(data.home.topSellerOrder||[]).filter(id=>ids.has(id));data.home.newArrivalOrder=(data.home.newArrivalOrder||[]).filter(id=>ids.has(id));if(!data.home.topSellerOrder.length)data.home.topSellerOrder=initial.home.topSellerOrder.slice();if(!data.home.newArrivalOrder.length)data.home.newArrivalOrder=initial.home.newArrivalOrder.slice();}}
   } catch { data=structuredClone(initial); }
   data.home=data.home||structuredClone(initial.home);
+  data.cms=normalizeCms(data.cms);
   data.home.categoriesEnabled=data.home.categoriesEnabled!==false;
   data.home.categoryOrder=Array.isArray(data.home.categoryOrder)?data.home.categoryOrder:Object.keys(categoryCards);
   data.home.categoryOrder=[...new Set([...data.home.categoryOrder.filter(c=>categoryCards[c]),...Object.keys(categoryCards).filter(c=>!data.home.categoryOrder.includes(c))])];
@@ -72,14 +92,16 @@
     for(const result of [productsResult,couponsResult,homeResult,reviewsResult])if(result.error)throw result.error;
     if(productsResult.data?.length)data.products=productsResult.data.map(productFromRow);
     if(couponsResult.data)data.coupons=couponsResult.data.map(c=>({code:c.code,type:c.discount_type,value:Number(c.value),minimum:Number(c.minimum||0),active:c.active}));
-    if(homeResult.data){const h=homeResult.data;data.home={topSellersEnabled:h.top_sellers_enabled,topSellersTitle:h.top_sellers_title,topSellerOrder:h.top_seller_order||[],newArrivalsEnabled:h.new_arrivals_enabled,newArrivalsTitle:h.new_arrivals_title,newArrivalOrder:h.new_arrival_order||[],categoriesEnabled:h.categories_enabled!==false,categoryOrder:h.category_order||Object.keys(categoryCards),hiddenCategories:h.hidden_categories||[]};}
+    let cmsNeedsSeed=false;
+    if(homeResult.data){const h=homeResult.data;data.home={topSellersEnabled:h.top_sellers_enabled,topSellersTitle:h.top_sellers_title,topSellerOrder:h.top_seller_order||[],newArrivalsEnabled:h.new_arrivals_enabled,newArrivalsTitle:h.new_arrivals_title,newArrivalOrder:h.new_arrival_order||[],categoriesEnabled:h.categories_enabled!==false,categoryOrder:h.category_order||Object.keys(categoryCards),hiddenCategories:h.hidden_categories||[]};cmsNeedsSeed=!h.cms_config||!Object.keys(h.cms_config).length;data.cms=normalizeCms(h.cms_config);}
     if(reviewsResult.data){data.reviews={};reviewsResult.data.forEach(r=>{(data.reviews[r.product_id]||(data.reviews[r.product_id]=[])).push({id:r.id,name:r.customer_name,rating:r.rating,text:r.comment,date:r.created_at});});}
-    save();return true;
+    save();if(cmsNeedsSeed)await saveCloudCms();return true;
   }
   async function saveCloudProduct(product){const {error}=await supabaseClient.from("products").upsert(productToRow(product));if(error)throw error;}
   async function deleteCloudProduct(id){const {error}=await supabaseClient.from("products").delete().eq("id",id);if(error)throw error;}
   async function saveCloudCoupon(c){const {error}=await supabaseClient.from("coupons").upsert({code:c.code,discount_type:c.type,value:c.value,minimum:c.minimum||0,active:c.active!==false});if(error)throw error;}
   async function deleteCloudCoupon(code){const {error}=await supabaseClient.from("coupons").delete().eq("code",code);if(error)throw error;}
+  async function saveCloudCms(){const {error}=await supabaseClient.from("home_settings").upsert({id:1,cms_config:data.cms});if(error)throw error;}
   async function saveCloudHome(){const h=data.home,{error}=await supabaseClient.from("home_settings").upsert({id:1,top_sellers_enabled:h.topSellersEnabled,top_sellers_title:h.topSellersTitle,top_seller_order:h.topSellerOrder,new_arrivals_enabled:h.newArrivalsEnabled,new_arrivals_title:h.newArrivalsTitle,new_arrival_order:h.newArrivalOrder,categories_enabled:h.categoriesEnabled,category_order:h.categoryOrder,hidden_categories:h.hiddenCategories});if(error)throw error;}
   async function saveCloudReview(productId,review){const {error}=await supabaseClient.from("reviews").insert({product_id:productId,customer_name:review.name,rating:review.rating,comment:review.text,published:true});if(error)throw error;}
   async function loadCloudOrders(){const {data:rows,error}=await supabaseClient.from("orders").select("order_number,customer_name,contact,items_text,total,status,created_at").order("created_at",{ascending:false});if(error)throw error;data.orders=(rows||[]).map(r=>({id:r.order_number,name:r.customer_name,contact:r.contact,itemsText:r.items_text,total:Number(r.total),status:r.status,createdAt:r.created_at}));save();}
