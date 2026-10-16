@@ -5,7 +5,7 @@
   const SUPABASE_URL = "https://esdtpdbljyorqvoaleev.supabase.co";
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_mFn8IqaumpqM4ILdATzdzw_dW6ds-4F";
   const ADMIN_ID = "hire123";
-  const ADMIN_EMAIL = "omkarpatil0806@gmail.com";
+  const ADMIN_EMAIL = "hire@g.com";
   const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
   const pic = {
     ruby:"media/ruby-jhumka-necklace-set.webp",
