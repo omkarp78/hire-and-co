@@ -3,14 +3,12 @@
     {
       "source": "/index.html",
       "destination": "/home",
-      "permanent": true,
-      "preserveQueryParams": false
+      "permanent": true
     },
     {
       "source": "/admin.html",
       "destination": "/admin",
-      "permanent": true,
-      "preserveQueryParams": false
+      "permanent": true
     },
     {
       "source": "/category.html",
@@ -22,8 +20,7 @@
         }
       ],
       "destination": "/category/earrings",
-      "permanent": true,
-      "preserveQueryParams": false
+      "permanent": true
     },
     {
       "source": "/category.html",
@@ -35,8 +32,7 @@
         }
       ],
       "destination": "/category/mangalsutras",
-      "permanent": true,
-      "preserveQueryParams": false
+      "permanent": true
     },
     {
       "source": "/category.html",
@@ -48,8 +44,7 @@
         }
       ],
       "destination": "/category/jewellery-sets",
-      "permanent": true,
-      "preserveQueryParams": false
+      "permanent": true
     },
     {
       "source": "/category.html",
@@ -61,8 +56,7 @@
         }
       ],
       "destination": "/category/all",
-      "permanent": true,
-      "preserveQueryParams": false
+      "permanent": true
     },
     {
       "source": "/product.html",
@@ -74,8 +68,7 @@
         }
       ],
       "destination": "/product/:id",
-      "permanent": true,
-      "preserveQueryParams": false
+      "permanent": true
     }
   ],
   "rewrites": [
