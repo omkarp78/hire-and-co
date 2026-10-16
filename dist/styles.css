@@ -39,3 +39,6 @@
 .footer-mark{min-width:100px}
 @media(max-width:900px){.site-header{height:96px}.admin-topbar{height:96px}.brand-logo{height:84px}}
 @media(max-width:620px){.site-header{height:78px}.admin-topbar{height:78px}.brand-logo{height:68px}.footer-mark{min-width:68px}}
+
+/* Keep hidden admin screens out of view after a successful sign-in. */
+.admin-login-wrap[hidden]{display:none!important}
