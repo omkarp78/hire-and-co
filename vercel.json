@@ -99,6 +99,14 @@
     {
       "source": "/product/:id",
       "destination": "/product.html"
+    },
+    {
+      "source": "/listing/:slug",
+      "destination": "/listing.html"
+    },
+    {
+      "source": "/category/:slug",
+      "destination": "/category.html"
     }
   ]
 }
