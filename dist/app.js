@@ -123,7 +123,7 @@
   }
   function renderCategory(){
     const root=document.getElementById("category-content");if(!root)return;
-    const params=new URLSearchParams(location.search),category=params.get("category")||"all",type=params.get("type")||"";
+    const params=new URLSearchParams(location.search),pathSlug=location.pathname.match(/^\/category\/([^/]+)/)?.[1],pathCategory={earrings:"Earrings",mangalsutras:"Mangalsutra","jewellery-sets":"Jewellery Sets",all:"all"}[pathSlug]||"all",category=params.get("category")||pathCategory,type=params.get("type")||"";
     const title=category==="all"?(lang==="mr"?"संपूर्ण संग्रह":lang==="hi"?"पूरा संग्रह":"The whole collection"):categoryLabel(category);
     const choices=category==="all"?Object.values(types).flat():types[category]||[];
     const matching=data.products.filter(p=>(category==="all"||p.category===category)&&(!type||p.type===type));
@@ -134,7 +134,7 @@
   const reviewSamples={"s1":[{name:"Sample customer",rating:5,text:"Lovely set, the matching jhumkas look beautiful.",sample:true}],"m1":[{name:"Sample customer",rating:5,text:"A pretty everyday style.",sample:true}]};
   function renderProduct(){
     const root=document.getElementById("product-content");if(!root)return;
-    const id=new URLSearchParams(location.search).get("id"),p=data.products.find(x=>x.id===id);
+    const productPathId=location.pathname.match(/^\/product\/([^/]+)$/)?.[1],id=new URLSearchParams(location.search).get("id")||(productPathId?decodeURIComponent(productPathId):null),p=data.products.find(x=>x.id===id);
     if(!p){root.innerHTML="<div class='empty-state product-not-found'>We couldn’t find that piece. <a href='/home'>Browse the collection →</a></div>";return;}
     document.title=p.name+" — Hire Jewellery";
     const reviews=(data.reviews[id]||reviewSamples[id]||[]),stars=r=>"★".repeat(Number(r||5))+"☆".repeat(5-Number(r||5)),name=localized(p,"name"),description=localized(p,"desc")||p.description;
