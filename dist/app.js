@@ -106,7 +106,7 @@
   const money=n=>"₹"+Number(n||0).toLocaleString("en-IN");
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const image=(src,alt)=>"<img src='"+esc(src||pic.ruby)+"' alt='"+esc(alt||"Jewellery product")+"' loading='lazy' onerror=\"this.onerror=null;this.src='"+pic.ruby+"'\">";
-  const makeUrl=(page,params)=>page+"?"+new URLSearchParams(params).toString();
+  const makeUrl=(page,params)=>{if(page==="product.html")return "/product/"+encodeURIComponent(params.id);if(page==="category.html"){const slugs={Earrings:"earrings",Mangalsutra:"mangalsutras","Jewellery Sets":"jewellery-sets",all:"all"};const path="/category/"+(slugs[params.category]||"all"),query=new URLSearchParams();if(params.type)query.set("type",params.type);return path+(query.toString()?"?"+query.toString():"");}return page+"?"+new URLSearchParams(params).toString();};
   const toast=message=>{const el=document.getElementById("toast");if(!el)return;el.textContent=message;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2300);};
 
   function productCard(p){
