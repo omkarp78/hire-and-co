@@ -82,23 +82,23 @@
     },
     {
       "source": "/category/earrings",
-      "destination": "/category.html?category=Earrings"
+      "destination": "/category.html"
     },
     {
       "source": "/category/mangalsutras",
-      "destination": "/category.html?category=Mangalsutra"
+      "destination": "/category.html"
     },
     {
       "source": "/category/jewellery-sets",
-      "destination": "/category.html?category=Jewellery%20Sets"
+      "destination": "/category.html"
     },
     {
       "source": "/category/all",
-      "destination": "/category.html?category=all"
+      "destination": "/category.html"
     },
     {
       "source": "/product/:id",
-      "destination": "/product.html?id=:id"
+      "destination": "/product.html"
     }
   ]
 }
